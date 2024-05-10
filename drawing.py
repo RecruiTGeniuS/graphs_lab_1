@@ -1,84 +1,89 @@
-import matplotlib.pyplot as plt
-import networkx as nx 
+import pygame as pg
+
+pg.init()
+
+# Параметры основного экрана
+WIDTH = 900
+HEIGHT = 900
+
+# Параметры виртуальной поверхности
+VWIDHT = WIDTH + 1000 # В теории можно брать по параметрам того какая у дерева ширина
+VHEIGHT = HEIGHT + 1000 # Ну а тут какая высота
+
+FPS = 60
+
+
+# Основной экран
+screen = pg.display.set_mode((WIDTH, HEIGHT), pg.RESIZABLE | pg.DOUBLEBUF | pg.HWSURFACE, pg.NOFRAME)
+pg.display.set_caption('Binary Tree')
+# ------------------------------------
+
+
+# Виртуальная поверхность на экране
+virtual_surface = pg.Surface((VWIDHT, VHEIGHT))
+virtual_surface.fill('white')
+
+# Копия поверхности для трансформации
+virtual_surface_transform = virtual_surface
+
+# Взятие экземляра класса Rect для того чтобы перемещать/масштабировать поверхность
+virtual_surface_rect = virtual_surface.get_rect(center=(WIDTH / 2, HEIGHT / 2 + 400))
+
+# Идентификатор взятия пользователем виртуальной поверхности
+virtual_surface_grab = False
+
+# Отрисовка кружков и линий на виртуальной поверхности
+pg.draw.circle(virtual_surface, 'black', (500, 500), 10, 0)
+pg.draw.line(virtual_surface, 'black', (500, 500), (570, 570), 2)
+pg.draw.circle(virtual_surface, 'black', (570, 570), 10, 0)
+# -------------------------------------
 
 
 
-with open('trees.txt', 'r') as trees_file:
-    t_nodes = trees_file.readline().split()
-    t_left = trees_file.readline().split()
-    t_right = trees_file.readline().split()
+# Цикл работы программы
+running = True
+while running:
 
-print(t_left)
+    # Обработка событий
+    for event in pg.event.get():
+        if event.type == pg.MOUSEBUTTONDOWN:
+            if event.button == 1:
+                if virtual_surface_rect.collidepoint(event.pos):
+                    virtual_surface_grab = True
+
+            if event.button == 4 or event.button == 5:
+                zoom = 1.11 if event.button == 4 else 0.9
+                mx, my = event.pos
+                left = mx + (virtual_surface_rect.left - mx) * zoom
+                if left > -5500: # кажется можно брать по тому что прибавляешь +- heigh (около того)
+                    right = mx + (virtual_surface_rect.right - mx) * zoom
+                    top = my + (virtual_surface_rect.top - my) * zoom
+                    bottom = my + (virtual_surface_rect.bottom - my) * zoom
+                    virtual_surface_rect = pg.Rect(left, top, right-left, bottom-top)
+                    virtual_surface_transform = pg.transform.smoothscale(virtual_surface, virtual_surface_rect.size)
+                    print(left, right, top, bottom)
+                
+
+        if event.type == pg.MOUSEBUTTONUP:
+            if event.button == 1:
+                virtual_surface_grab = False
+
+        if event.type == pg.MOUSEMOTION:
+            if virtual_surface_grab == True:
+                virtual_surface_rect.move_ip(event.rel)
+
+
+        if event.type == pg.QUIT:
+            running = False
+
+
+    # Обновление и отрисовка
+    screen.fill('black')
+    screen.blit(virtual_surface_transform, virtual_surface_rect)
+    # ----------------------------------
+
+
+    pg.display.flip()
     
-    
-G = nx.Graph()
 
-nodes = []
-left = []
-right = []
-
-edges = []
-
-    
-    
-
-for i in range(len(t_nodes)):
-    nodes.append(int(t_nodes[i]))
-    left.append(int(t_left[i]))
-    right.append(int(t_right[i]))
-
-print(nodes)
-print(left)
-print(right)
-
-reversed_nodes = set()
-    
-
-for i in range(len(nodes)):
-    if right[i] == 0:
-        edges.append((nodes[i], nodes[i] * -1))
-        reversed_nodes.add(nodes[i] * -1)
-    elif right[i] != 0:
-        edges.append((nodes[i], right[i]))
-
-    if left[i] == 0:
-        edges.append((nodes[i], nodes[i] * -1))
-        reversed_nodes.add(nodes[i] * -1)
-    elif left[i] != 0:
-        edges.append((nodes[i], left[i]))
-    
-
-print(edges)
-print(reversed_nodes)
-
-# создать map по reversed и перекрасить все узлы с -1 в белый, а также их ветки
-
-
-
-
-
-# nodes = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
-# edges = [(1, 2), (1, 3), (2, 4), (2, 5), (3, 6), (3, 7), (7, 8), (7, 9), (9, 10), (9, 11)]
-# edges.append((11,12)) # это как добавлять
-# # (корень1, левый[значение]), (корень1, правый[значение])
-
-G.add_nodes_from(nodes)
-G.add_edges_from(edges)
-
-pos = nx.nx_agraph.graphviz_layout(G, prog='dot')
-
-
-options = {
-    'node_size': 1400,              # размер кружков
-    'node_color': 'MediumBlue',     # цвет кружков
-    'edgecolors': 'black',          # цвет границ  кружков
-    'linewidths': 0,                # толщина границ кружков
-    'edge_color':'MidnightBlue',    # цвет соединяющих линий
-    'width': 1,                     # толщина соединяющих линий
-    'font_size': 8,                 # размер текста внутри кружков
-    'font_color': 'white',          # цвет текста внутри кружков
-}                                   # ^имена цветов: (https://colorscheme.ru/html-colors.html)
-
-nx.draw(G, pos, with_labels=True, **options)
-
-plt.show()
+pg.quit()

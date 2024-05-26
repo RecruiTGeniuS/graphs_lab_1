@@ -1,7 +1,30 @@
 import pygame as pg
 import binary_tree as bt
 
+# Функция по отрисовки круга (рабочая, но радиус не трогать)
+def draw_node_circle(surface, ex_color, in_color, x, y, radius, text, text_color):
+    # Чтобы текст помещался в кружок
+    if radius > 10:
+        text_size = len(str(text))
+
+        pg.draw.circle(surface, ex_color, (x, y), radius, 0)
+        pg.draw.circle(surface, in_color, (x, y), radius - 1, 0)
+        format_text = pg.font.Font(pg.font.match_font('verdana'), radius - 5 - text_size)
+        in_text = format_text.render(str(text), 1, text_color)
+        text_rect = in_text.get_rect(center=(x, y))
+        surface.blit(in_text, text_rect)
+
+
+
+# Функция отрисовки дерева с узла 
 def draw_tree(node_root):
+    if node_root.key > 1000:
+        return 0
+    
+    nodes = bt.count_nodes(node_root)
+    tree_width = bt.tree_width(node_root)
+    tree_depth = bt.tree_depth(node_root)
+
     pg.init()
 
     # Параметры основного экрана
@@ -9,12 +32,19 @@ def draw_tree(node_root):
     HEIGHT = 900
 
     # Параметры виртуальной поверхности
-    VWIDHT = WIDTH + 3000 # В теории можно брать по параметрам того какая у дерева ширина
-    VHEIGHT = HEIGHT + 2000 # Ну а тут какая высота
+    
+    if nodes / tree_width > 5:
+        VWIDHT = WIDTH + 5000 * tree_width # В теории можно брать по параметрам того какая у дерева ширина
+    elif nodes / tree_width > 200:
+        VWIDHT = WIDTH + 5000 * tree_width
+    else:
+        VWIDHT = WIDTH + 500 * tree_width
+
+    VHEIGHT = HEIGHT + 50 * tree_depth # Ну а тут какая высота
 
     # Шаг для изменения длин/наклона веток
-    X_STEP = 50
-    Y_STEP = 20
+    X_STEP = 20
+    Y_STEP = 15
 
     # Начальные координаты корня дерева
     node_root.x = VWIDHT / 2
@@ -36,7 +66,7 @@ def draw_tree(node_root):
     virtual_surface_transform = virtual_surface
 
     # Взятие экземляра класса Rect для того чтобы перемещать/масштабировать поверхность
-    virtual_surface_rect = virtual_surface.get_rect(center=(WIDTH / 2, HEIGHT / 2 + 400))
+    virtual_surface_rect = virtual_surface.get_rect(center=(WIDTH / 2, HEIGHT / 2 + (HEIGHT - 400)))
 
     # Идентификатор взятия пользователем виртуальной поверхности
     virtual_surface_grab = False
@@ -50,34 +80,33 @@ def draw_tree(node_root):
         if node is None:
             return 0
         
+        
         node_childrens = bt.count_nodes(node) - 1
-        print(node_childrens, ':', node.key)
-        x_offset = X_STEP * node_childrens
-        y_offset = Y_STEP * node_childrens
+        x_offset = X_STEP * node_childrens / 1.1 + X_STEP
+        y_offset = Y_STEP + (Y_STEP * 2) + (Y_STEP * (node_childrens / nodes))
 
         if node.left != None and node.right != None:
             pg.draw.line(virtual_surface, 'black', (node.x, node.y), (node.x - x_offset, node.y + y_offset))
             pg.draw.line(virtual_surface, 'black', (node.x, node.y), (node.x + x_offset, node.y + y_offset))
-            pg.draw.circle(virtual_surface, 'black', (node.x, node.y), 10, 0)
+            draw_node_circle(virtual_surface, 'black', 'white', node.x, node.y, 20, node.key, 'black')
             node.left.x = node.x - x_offset
             node.left.y = node.y + y_offset
             node.right.x = node.x + x_offset
             node.right.y = node.y + y_offset
         if node.left != None and node.right == None:
             pg.draw.line(virtual_surface, 'black', (node.x, node.y), (node.x - x_offset, node.y + y_offset))
-            pg.draw.circle(virtual_surface, 'black', (node.x, node.y), 10, 0)
+            draw_node_circle(virtual_surface, 'black', 'white', node.x, node.y, 20, node.key, 'black')
             node.left.x = node.x - x_offset
             node.left.y = node.y + y_offset
         if node.left == None and node.right != None:
             pg.draw.line(virtual_surface, 'black', (node.x, node.y), (node.x + x_offset, node.y + y_offset))
-            pg.draw.circle(virtual_surface, 'black', (node.x, node.y), 10, 0)
+            draw_node_circle(virtual_surface, 'black', 'white', node.x, node.y, 20, node.key, 'black')
             node.right.x = node.x + x_offset
             node.right.y = node.y + y_offset
         if node.left == None and node.right == None:
-            pg.draw.circle(virtual_surface, 'black', (node.x, node.y), 10, 0)
+            draw_node_circle(virtual_surface, 'black', 'white', node.x, node.y, 20, node.key, 'black')
 
         
-
         traversal_draw(node.left)
         traversal_draw(node.right)
         

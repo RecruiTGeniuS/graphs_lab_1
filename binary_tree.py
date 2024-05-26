@@ -1,345 +1,225 @@
+# Файл с классом для представления бинарного дерева и фукнция для работы с этим деревом
 
-
-
-# # Класс узла
-# class Node:
-#     def __init__(self, key):
-#         self.key = key
-#         self.left = None
-#         self.right = None
-#         self.correlation = None
-
-
-#     # Глубина
-
-#     # Ширина
-
-#     # Алгоритм
-
-#     # Добавление узла
-
-# # Семантически - кайф, фактически - а зачем? Не создаст ли больше проблем?
-# class BinaryTree(object):
-#     def __init__(self, root):
-#         self.root = Node(root)
-
-
-# # Обход в глубину
-# def pre_order(node):
-#     if node is None:
-#         return 0
-    
-#     print(node.key)
-#     pre_order(node.left)
-#     pre_order(node.right)
-    
-
-# # Украденная функия поиска глубины (рабочая, может понадобиться для отрисовки) для задания фигачь тут отсюда -1, чтобы типа высота по вершинам
-# def maxDepth(node):
-#     if node is None:
-#         return 0
- 
-#     else:
- 
-#         # Compute the depth of each subtree
-#         lDepth = maxDepth(node.left)
-#         rDepth = maxDepth(node.right)
- 
-#         # Use the larger one
-#         if (lDepth > rDepth):
-#             return lDepth+1
-#         else:
-#             return rDepth+1
-
-# # Украденная функция поиска кол-ва листьев 
-# def num_leaves(root):
-#     count = 0
-#     if root.left is None and root.right is None:
-#         count += 1
-#     if root.left:
-#         count += num_leaves(root.left)
-#     if root.right:
-#         count += num_leaves(root.right)
-
-#     return count
-
-
-
-
-  
-
-
-# # Типа алгоритм, связанный с заданием
-# def min_max_subtrees(root):
-
-
-#     # По идее, если эту функцию делат как метод класса BinaryTree то эти значения могут пойти как его атрибуты
-#     min_correlation = (maxDepth(root) - 1) / num_leaves(root)
-#     max_correlation = (maxDepth(root) - 1) / num_leaves(root)
-#     min_trees_keys = []
-#     max_trees_keys = []
-
-#     def alg(node):
-#         nonlocal min_correlation, max_correlation 
-#         print(max_correlation)
-#         if node is None:
-#             return 0
-        
-#         node.correlation = (maxDepth(node) - 1) / num_leaves(node)
-#         print(node.key, ': ', node.correlation)
-
-#         if node.correlation == 0:
-#             pass
-#         elif node.correlation < min_correlation:
-#             min_correlation = node.correlation
-#             min_trees_keys.clear()
-#             min_trees_keys.append(node)
-#         elif node.correlation == min_correlation:
-#             min_trees_keys.append(node)
-        
-
-#         if node.correlation > max_correlation:
-#             max_correlation = node.correlation
-#             max_trees_keys.clear()
-#             max_trees_keys.append(node)
-#         elif node.correlation == max_correlation:
-#             max_trees_keys.append(node)
-#         alg(node.left)
-#         alg(node.right)
-#         return min_correlation, max_correlation
-
-#     alg(root)
-
-#     return min_correlation, max_correlation, max_trees_keys, min_trees_keys
-# # arr_nodes = []
-# # for i in range(1, 5):
-# #     arr_nodes.append(Node(i))
-
-# # l = [0, 3, 0, 0]
-# # r = [2, 4, 0, 0]
-
-# # for i in range(4):
-# #     if l[i] != 0:
-# #         arr_nodes[i].left = Node(l[i])
-
-# #     if r[i] != 0:
-# #         arr_nodes[i].right = Node(r[i])
-
-
-
-
-# root = Node(1)
-# root.left = Node(2)
-# root.right = Node(3)
-# n2 = root.right.left = Node(4)
-# root.right.right = Node(5)
-# root.right.left.left = Node(6)
-# root.right.left.right = Node(7)
-# root.right.left.right.left = Node(8)
-# root.right.left.right.right = Node(9)
-# root.right.right.right = Node(10)
-# root.right.right.right.right = Node(11)
-# root.right.right.right.right.right = Node(12)
-# root.right.right.right.right.right.left = Node(13)
-# root.right.right.right.right.right.right = Node(14)
-# root.right.right.right.right.right.right.left = Node(15)
-# root.right.right.right.right.right.right.right = Node(16)
-
-
-# print('-----------')
-# print(maxDepth(n2) - 1)
-# print(num_leaves(n2))
-
-# print(min_max_subtrees(root)[0])
-
-
-
-
-
-# def min_max_subtrees(root):
-#     min_ratio = float('inf')
-#     max_ratio = float('-inf')
-#     min_trees = []
-#     max_trees = []
-
-#     def helper(node):
-#         nonlocal min_ratio, max_ratio
-#         if node is None:
-#             return (float('inf'), float('-inf'))
-#         left_height = height(node.left)
-#         right_height = height(node.right)
-#         left_leaves = count_leaves(node.left)
-#         right_leaves = count_leaves(node.right)
-#         if left_leaves == 0 or right_leaves == 0:
-#             return (float('inf'), float('-inf'))
-#         ratio = max(left_height / left_leaves, right_height / right_leaves)
-#         if ratio < min_ratio:
-#             min_ratio = ratio
-#             min_trees.clear()
-#             min_trees.append(node)
-#         elif ratio == min_ratio:
-#             min_trees.append(node)
-#         if ratio > max_ratio:
-#             max_ratio = ratio
-#             max_trees.clear()
-#             max_trees.append(node)
-#         elif ratio == max_ratio:
-#             max_trees.append(node)
-#         min_left, max_left = helper(node.left)
-#         min_right, max_right = helper(node.right)
-#         return (min(min_left, min_right, ratio), max(max_left, max_right, ratio))
-
-#     helper(root)
-#     return min_ratio, max_ratio, min_trees, max_trees
-
-
-
-
-
-
-
-
-
-
-
-# РАБОЧИЙ КОД
+# Подключение библиотек
+import random
 from collections import deque
 
 
-
+# Класс узла
 class Node:
     # Конструктор
-    def __init__(self, key):
+    def __init__ (self, key):
         self.key = key
         self.left = None
         self.right = None
-        self.correlation = None # Соотношение высота/листья
-        self.x = None # Координата узла по оси Х. Требуется для отрисовки
-        self.y = None # Координата узла по оси Y
 
+        # Координта по оси X и Y, требуются для отрисовки
+        self.x = None
+        self.y = None
+
+
+# Класс бинарного дерева
 class BinaryTree:
     # Конструктор
     def __init__ (self, root_node):
         self.root = root_node # Корень бинарного дерева
-        
-        # Минимальное и максимальное соотношения высота/листья
-        self.min_correlation = correlation(root_node)
-        self.max_correlation = correlation(root_node)
-        
-        # Массивы узлов, соотношения которых соответсвуют минимальному и максимальному
-        self.min_corr_nodes = []
-        self.max_corr_nodes = []
-        
-    # Метод ищущий минимальное и максимальное соотношения в дереве, а также сответствующие им узлы
-    def find_correlation(self, node):
-        if node is None:
+
+        # Массивы для хранения корней поддеревьев с максимальным/минимальным соотношением
+        self.max_ratio_subtrees = [] 
+        self.min_ratio_subtrees = []
+
+    # Метод для поиска поддеревьев с максимальным/минимальным соотношениями (итерационный)
+    def find_ratio_subtrees(self):
+        if self.root is None:
             return 0
         
-        node.correlation = correlation(node)
-        
-        if node.correlation == 0:
-            pass
-        else:
-            if node.correlation < self.min_correlation:
-                self.min_correlation = node.correlation
-                self.min_corr_nodes.clear()
-                self.min_corr_nodes.append(node)
-            elif node.correlation == self.min_correlation:
-                self.min_corr_nodes.append(node)
+        # Вложенная функция, возвращающая высоту дерева/поддерева и кол-во его листьев
+        def height_and_leaves(node):
+            if node is None:
+                return 0, 0
             
-                
-            if node.correlation > self.max_correlation:
-                self.max_correlation = node.correlation
-                self.max_corr_nodes.clear()
-                self.max_corr_nodes.append(node)
-            elif node.correlation == self.max_correlation:
-                self.max_corr_nodes.append(node)
+            stack = [(node, 1)]
+            max_height = 0
+            leaves = 0
+
+            while stack:
+                current, height = stack.pop()
+                max_height = max(max_height, height)
+
+                if current.left is None and current.right is None:
+                    leaves += 1
+                if current.right:
+                    stack.append((current.right, height + 1))
+                if current.left:
+                    stack.append((current.left, height + 1))
+            
+            return max_height - 1, leaves
         
-        self.find_correlation(node.left)
-        self.find_correlation(node.right)
+        # Вложенная функция, собирающая все поддереья в массив
+        def get_subtrees(node):
+            queue = [node]
+            subtrees = []
+
+            while queue:
+                current = queue.pop(0)
+
+                if current.left or current.right:
+                    subtrees.append(current)
+                if current.left:
+                    queue.append(current.left)
+                if current.right:
+                    queue.append(current.right)
+            
+            return subtrees
         
-        
-    
-# Функция для поиска глубины дерева/поддерева
-def depth(node):
+        # Начальные условия для поиска соотношений
+        subtrees = get_subtrees(self.root)
+        max_ratio = float('-inf')
+        min_ratio = float('inf')
+
+        # Поиск максимальных/минимальных соотношений
+        for subtree in subtrees:
+            height, leaves = height_and_leaves(subtree)
+
+            if leaves == 0:
+                continue
+
+            ratio = height / leaves
+
+            if ratio > max_ratio:
+                max_ratio = ratio
+                self.max_ratio_subtrees = [subtree]
+            elif ratio == max_ratio:
+                self.max_ratio_subtrees.append(subtree)
+
+            if ratio < min_ratio:
+                min_ratio = ratio
+                self.min_ratio_subtrees = [subtree]
+            elif ratio == min_ratio:
+                self.min_ratio_subtrees.append(subtree)
+
+
+# Функция для поиска глубины дерева/поддерева (итерационная) нужна для отрисовки
+def tree_depth(node):
     if node is None:
         return 0
-     
-    left_depth = depth(node.left)
-    right_depth = depth(node.right)
     
-    return max(left_depth, right_depth) + 1
+    depth = 0
+    queue = [(node, 1)]
 
-# Функция для поиска ширины дерева/поддерева Украдена(https://www.geeksforgeeks.org/maximum-width-of-a-binary-tree/)
-def getMaxWidth(root):
-    if root is None:
+    while queue:
+        node, level = queue.pop()
+        depth = max(depth, level)
+
+        if node.left:
+            queue.append((node.left, level + 1))
+        if node.right:
+            queue.append((node.right, level + 1))
+    
+    return depth
+
+# Функция для поиска ширины дерева/поддерева (итерационная) нужна для отрисовки
+def tree_width(node):
+    if node is None:
         return 0
+    
     q = deque()
-    maxWidth = 0
- 
-    q.append(root)
- 
+    q.append(node)
+    width = 0
+
     while q:
         count = len(q)
- 
-        maxWidth = max(count, maxWidth)
- 
-        while (count is not 0):
-            count = count-1
+        width = max(count, width)
+
+        while (count != 0):
+            count -= 1
             temp = q.popleft()
             if temp.left is not None:
                 q.append(temp.left)
- 
+            
             if temp.right is not None:
                 q.append(temp.right)
- 
-    return maxWidth
-        
-# Функция для поиска кол-ва листьев у дерева/поддерева
-def count_leaves(node):
-    count = 0
-    if node.left is None and node.right is None:
-        count += 1
-    if node.left:
-        count += count_leaves(node.left)
-    if node.right:
-        count += count_leaves(node.right)
-    
-    return count
 
-# Функия, считающая колиство узлов в дереве/поддереве
+    return width
+
+# Функция для поиска кол-ва детей у дерева/поддерева (итерационная) нужна для отрисовки
 def count_nodes(node):
-    if not node:
+    if node is None:
         return 0
+
+    node_count = 0
+    queue = [node]
+
+    while queue:
+        node = queue.pop(0)
+        node_count += 1  
+        if node.left:
+            queue.append(node.left)
+        if node.right:
+            queue.append(node.right)
+
+    return node_count
+
+# Функция для создания дерева на основе данных из файла
+def file_build_tree(file):
+    with open(file, 'r') as tree_file:
+        nodes = list(map(int, tree_file.readline().split()))
+        left_children = list(map(int, tree_file.readline().split()))
+        right_children = list(map(int, tree_file.readline().split()))
+
+    if not nodes:
+        return None
+
+    node_dict = {key: Node(key) for key in nodes}
+
+    for i, key in enumerate(nodes):
+        if left_children[i] != 0:
+            node_dict[key].left = node_dict[left_children[i]]
+        if right_children[i] != 0:
+            node_dict[key].right = node_dict[right_children[i]]
+
+    return node_dict[nodes[0]] # Возвращает корень дерева
+
+
+# Две функции для создания случайного дерева с соблюдением примерного баланса
+# Функия для случайной вставки
+def insert_random(root, key):
+    if root is None:
+        return Node(key)
     
-    return 1 + count_nodes(node.left) + count_nodes(node.right)
-    
-# Функция, вычисляющая отношение высота/листья
-def correlation(node):
-    return ((depth(node) - 1) / count_leaves(node))
-    
+    elif random.random() < 0.5:  # Вероятность вставки в левое поддерево
+        root.left = insert_random(root.left, key)
+
+    else:  # Вероятность вставки в правое поддерево
+        root.right = insert_random(root.right, key)
+
+    return root
+
+# Функция для создания случайного дерева с соблюдением примерного баланса
+def random_build_tree(size):
+    root = None
+
+    for i in range(1, size + 1):
+        root = insert_random(root, i)
+
+    return root
 
 
-# root = Node(1)
-# root.left = Node(2)
-# root.left.left = Node(9)
-# root.right = Node(3)
-# root.right.left = Node(4)
-# root.right.right = Node(5)
-# root.right.left.left = Node(6)
-# root.right.left.right = Node(7)
+# Функция для создания дерева на основе данных, введённых с клавиатуры
+def input_build_tree():
+    nodes = list(map(int, input("Введите узлы дерева через пробел:     ").strip().split()))
+    left_children = list(map(int, input("Введите левых потомков через пробел:  ").strip().split()))
+    right_children = list(map(int, input("Введите правых потомков через пробел: ").strip().split()))
 
-# tree = BinaryTree(root)
-# tree.find_correlation(root)
-# print(tree.max_correlation)
-# print(count_nodes(root.right) - 1, 'Листья')
-# print(getMaxWidth(root))
+    if not nodes:
+        return None
 
+    node_dict = {key: Node(key) for key in nodes}
 
-# to-do:
-# * Ввод с клавиатуры
-# * Ввод с файла
-# * Связь с выводом
-# * Подсчёт времени работы алгоритма и вывод его
-    
+    for i, key in enumerate(nodes):
+        if left_children[i] != 0:
+            node_dict[key].left = node_dict.get(left_children[i], None)
+        if right_children[i] != 0:
+            node_dict[key].right = node_dict.get(right_children[i], None)
 
+    return node_dict[nodes[0]] # Возвращает корень дерева

@@ -1,22 +1,9 @@
+# Файл с функцией для создания абсолютно случайного дерева в файле
+
 import random
 
-
-# Количество узлов для деревьев:
-num_nodes_1 = 10
-num_nodes_2 = 100
-num_nodes_3 = 500
-num_nodes_4 = 1000
-num_nodes_5 = 5000
-num_nodes_6 = 10000
-num_nodes_7 = 50000
-num_nodes_8 = 100000
-num_nodes_9 = 500000
-num_nodes_10 = 1000000
-
-
-
 # Функция, генерирующая случайно дерево дерево
-def generateTree(num_nodes):
+def generate_tree_file(num_nodes):
 
     if num_nodes > 2:
         
@@ -27,7 +14,7 @@ def generateTree(num_nodes):
         сurrent_child = 0 # Переменная, определяющая потомков для узлов
 
 
-        # Добавление элементов в массив узлов
+        # Заполнение массива узлов
         for i in range(num_nodes):
             nodes.append(i + 1)
         
@@ -128,24 +115,24 @@ def generateTree(num_nodes):
                 left.append(0)
                 right.append(0)
 
-        return nodes, left, right
+        tree_list = [nodes, left, right]
+
+        # Запись в файл
+        with open('trees.txt', 'w') as trees_file:
+
+            for i in range(3):
+                for j in range(num_nodes):
+                    trees_file.write(str(tree_list[i][j]))
+                    trees_file.write(' ')
+                trees_file.write('\n')
+
+        
     
     else:
         print("Ошибка! Нужно задать больше чем 2 узла")
 
 
 
-# Генерация дерева
-tree_list = generateTree(10)
 
-
-# Запись в файл
-with open('trees.txt', 'w') as trees_file:
-
-    for i in range(3):
-        for j in range(10):
-            trees_file.write(str(tree_list[i][j]))
-            trees_file.write(' ')
-        trees_file.write('\n')
 
 
